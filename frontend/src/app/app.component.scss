@@ -1,0 +1,76 @@
+* {
+  padding: 0;
+  margin: 0;
+  color: #1a1f36;
+  box-sizing: border-box;
+  word-wrap: break-word;
+  font-family:
+    Segoe UI,
+    sans-serif;
+}
+body {
+  min-height: 100%;
+  background-color: #ffffff;
+}
+
+.box {
+  width: 100%;
+  padding: 10px 48px;
+
+  .heading {
+    width: inherit;
+    padding: 15px;
+    text-align: center;
+  }
+
+  .field {
+    input {
+      margin-bottom: 15px;
+      margin-top: 4px;
+      font-size: 16px;
+      line-height: 28px;
+      padding: 8px 16px;
+      width: 100%;
+      min-height: 44px;
+      border: unset;
+      border-radius: 4px;
+      outline-color: rgb(84 105 212 / 0.5);
+      background-color: rgb(255, 255, 255);
+      box-shadow:
+        rgba(0, 0, 0, 0) 0px 0px 0px 0px,
+        rgba(0, 0, 0, 0) 0px 0px 0px 0px,
+        rgba(0, 0, 0, 0) 0px 0px 0px 0px,
+        rgba(60, 66, 87, 0.16) 0px 0px 0px 1px,
+        rgba(0, 0, 0, 0) 0px 0px 0px 0px,
+        rgba(0, 0, 0, 0) 0px 0px 0px 0px,
+        rgba(0, 0, 0, 0) 0px 0px 0px 0px;
+    }
+  }
+
+  .btn-div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .btn {
+      background-color: #08d;
+      border-radius: 12px;
+      border: 0;
+      box-sizing: border-box;
+      color: #eee;
+      cursor: pointer;
+      font-size: 18px;
+      height: 50px;
+      margin-top: 10px;
+      // outline: 0;
+      text-align: center;
+      width: 20%;
+      margin: 0;
+    }
+    .btn:active {
+      background-color: #06b;
+    }
+  }
+}
+
+

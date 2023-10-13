@@ -87,7 +87,6 @@ app.get("/read-email", (req, res) => {
   imap.connect();
 });
 
-
 app.get("/read-email-callback", (req, res) => {
   function fetchEmailData(callback) {
     imap.once('ready', () => {
@@ -147,7 +146,7 @@ app.get("/read-email-callback", (req, res) => {
   }
 
   fetchEmailData((data) => {
-    console.log('All mail data:', data);
+    console.log('All mail data');
     res.json(data);
   });
 });
