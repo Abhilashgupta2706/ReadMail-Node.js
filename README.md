@@ -5,7 +5,7 @@ This repository contains my NodeJS practice codes. <br />
 ### About this project
 
 I made this project because when I was working as a software developer I had this requirement from a client to Excel data from an email's attachment using Angular & Node.js
-So I thought why should not create a small separate personal project which I can share on my repository?
+So I thought why should not create a small separate personal project which I can share on my repository
 
 Note: I have just given 2 input fields for Email ID and password. You can pass data from those fields as a parameter to the API and use them.
 
