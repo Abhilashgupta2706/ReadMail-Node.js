@@ -1,6 +1,6 @@
 # ReadMail-Node.js
 
-This repository contains my NodeJS practice codes. <br />
+This project can be used for reading the mail with Node.js and also the attachment (Only excel file). `<br />`
 
 ### About this project
 
@@ -46,5 +46,5 @@ The backend port is 4000
 
 ## About me
 
-If you want to know more about me, you can visit my [Portfolio Website](https://abhilash-gupta.web.app/).</br>
+If you want to know more about me, you can visit my [Portfolio Website](https://abhilash-gupta.web.app/).`</br>`
 If you have any creative ideas & you want to discuss them, please feel free to contact me anytime. I'm always looking for such opportunities
