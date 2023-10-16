@@ -33,7 +33,7 @@
   <h5 *ngIf="showReadData">Attachment Data:</h5>
   <h5 *ngIf="showReadData" class="attachment-data">{{mailData.attachmentData}}</h5>
   <h5 *ngIf="showReadSaveData">Attachment Data:</h5>
-  <table *ngIf="showReadSaveData" class="table">
+  <!-- <table *ngIf="showReadSaveData" class="table">
     <thead>
       <th>SR.</th>
       <th>Date</th>
@@ -57,6 +57,14 @@
         <td colspan="5">{{ item['SR.'] }}</td>
         <td>{{ item['Amt'] }}</td>
       </ng-container>
+    </tr>
+  </table> -->
+  <table class="table" *ngIf="showReadSaveData">
+    <tr>
+      <th *ngFor=" let header of getColumnHeaders(mailData.attachmentData)">{{ header }}</th>
+    </tr>
+    <tr *ngFor="let item of mailData.attachmentData">
+      <td *ngFor="let header of getColumnHeaders(mailData.attachmentData)">{{ item[header] || '' }}</td>
     </tr>
   </table>
 </div>

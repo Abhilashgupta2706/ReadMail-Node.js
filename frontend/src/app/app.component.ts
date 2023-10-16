@@ -55,7 +55,6 @@ export class AppComponent {
       res => {
         console.log(res)
         if (res == "No mail found") {
-          console.log(res)
           alert(res)
           return
         }
@@ -96,5 +95,17 @@ export class AppComponent {
     this.showReadSaveData = false
     this.show = false
     this.showReadData = false
+  }
+
+  getColumnHeaders(data: any[]): string[] {
+    const headers = new Set<string>();
+    for (const item of data) {
+      for (const key in item) {
+        if (item.hasOwnProperty(key)) {
+          headers.add(key);
+        }
+      }
+    }
+    return Array.from(headers);
   }
 }
