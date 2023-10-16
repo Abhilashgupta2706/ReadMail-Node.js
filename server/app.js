@@ -6,6 +6,7 @@ var bodyParser = require('body-parser');
 require('dotenv').config();
 const Imap = require('node-imap');
 const { simpleParser } = require('mailparser');
+const fs = require('fs');
 
 const app = express();
 
@@ -59,6 +60,10 @@ app.get("/read-email", (req, res) => {
 
         // const recentEmailIds = emailIds.slice(0, 3);  // Take the first 3 email IDs (most recent 3) and use recentEmailIds.forEach
 
+        if (emailIds.length == 0) {
+          return callback(null);
+        }
+
         emailIds.forEach((emailId) => {
           const fetch = imap.fetch(emailId, { bodies: '', struct: true });
           fetch.on('message', (msg) => {
@@ -90,12 +95,17 @@ app.get("/read-email", (req, res) => {
 app.get("/read-email-callback", (req, res) => {
   function fetchEmailData(callback) {
     imap.once('ready', () => {
+
       imap.openBox('INBOX', false, (err, mailbox) => {
         if (err) throw err;
         const searchCriteria = ['UNSEEN'];
 
         imap.search(searchCriteria, (err, emailIds) => {
           if (err) throw err;
+
+          if (emailIds.length == 0) {
+            return callback(null);
+          }
 
           emailIds.forEach((emailId) => {
 
@@ -146,8 +156,114 @@ app.get("/read-email-callback", (req, res) => {
   }
 
   fetchEmailData((data) => {
-    console.log('All mail data');
-    res.json(data);
+    console.log('Data sent');
+    if (data) {
+      res.json(data);
+    } else {
+      res.json("No mail found")
+    }
+  });
+});
+
+app.get("/read-save-email-callback", (req, res) => {
+  function fetchEmailData(callback) {
+    imap.once('ready', () => {
+      imap.openBox('INBOX', false, (err, mailbox) => {
+        if (err) throw err;
+        const searchCriteria = ['UNSEEN'];
+
+        imap.search(searchCriteria, (err, emailIds) => {
+          if (err) throw err;
+
+          if (emailIds.length == 0) {
+            return callback(null);
+          }
+
+          emailIds.forEach((emailId) => {
+
+            const fetch = imap.fetch(emailId, { bodies: '' });
+            fetch.on('message', (msg) => {
+              let mailData = {};
+              let isParsingComplete = false;
+
+              msg.on('body', (stream) => {
+                simpleParser(stream, (err, mail) => {
+                  if (err) throw err;
+
+                  mailData.attachments = mail.attachments
+                  mailData.headers = mail.headers
+                  mailData.headerLines = mail.headerLines
+                  mailData.html = mail.html
+                  mailData.text = mail.text
+                  mailData.textAsHtml = mail.textAsHtml
+                  mailData.subject = mail.subject
+                  mailData.date = mail.date
+                  mailData.to = mail.to
+                  mailData.from = mail.from
+                  mailData.messageId = mail.messageId
+
+                  if (mailData.attachments && mailData.attachments.length > 0) {
+                    // Save email attachments to files
+                    saveAttachmentsToFiles(mailData.attachments);
+                  }
+
+                  // attachments.push(mail.attachments[0].content.toString('utf8'));
+                  if (isParsingComplete) {
+                    callback(mailData);
+                  }
+                });
+              });
+
+              msg.on('end', () => {
+                isParsingComplete = true;
+                // Log email data after processing all attachments
+                if (mailData.length > 0) {
+                  callback(mailData);
+                }
+              });
+            });
+
+          });
+        });
+      });
+
+      // Respond after fetching and processing emails
+      // res.json("Kindly check server console to view the data");
+    });
+
+    imap.connect();
+
+  }
+  function saveAttachmentsToFiles(attachments) {
+    const folderPath = 'files'; // Path to the 'file' folder in the root directory
+
+    // Ensure the 'file' folder exists
+    if (!fs.existsSync(folderPath)) {
+      fs.mkdirSync(folderPath);
+    }
+
+    attachments.forEach((attachment, index) => {
+      // Generate a unique filename based on the attachment's filename or index
+      const fileName = `${folderPath}/${attachment.filename || `attachment_${index}`}`;
+
+      // Write the attachment content to a file
+      fs.writeFileSync(fileName, attachment.content, 'utf8', (err) => {
+        if (err) {
+          console.error(`Error saving attachment ${fileName}:`, err);
+        } else {
+          console.log(`Attachment saved to ${fileName}`);
+        }
+      });
+    });
+  }
+
+  fetchEmailData((data) => {
+    console.log('Data sent and attachments saved in files folder');
+    if (data) {
+      res.json(data);
+    } else {
+      res.json("No mail found")
+    }
   });
 });
 

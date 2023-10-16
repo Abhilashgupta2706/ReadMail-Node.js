@@ -51,6 +51,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
+    gap: 10px;
 
     .btn {
       background-color: #08d;
@@ -73,4 +74,26 @@ body {
   }
 }
 
-
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid black;
+  thead {
+    text-align: center;
+    border: 1px solid black;
+    table-layout: fixed;
+  }
+  th {
+    // background: #c6e0b4;
+    border: 1px solid black;
+    padding: 5px;
+  }
+  tr {
+    text-align: center;
+  }
+  td {
+    // background: #ffff99;
+    border: 1px solid black;
+    padding: 5px;
+  }
+}

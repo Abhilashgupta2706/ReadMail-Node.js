@@ -10,7 +10,10 @@ export class ApiServiceService {
 
   private apiEndPoint: string = "http://localhost:3000/"
 
-  getAllData(query: any) {
+  readMail(query: any) {
     return this.http.get(`${this.apiEndPoint}read-email-callback?${query}`);
+  }
+  readSaveMail(query: any) {
+    return this.http.get(`${this.apiEndPoint}read-save-email-callback?${query}`);
   }
 }

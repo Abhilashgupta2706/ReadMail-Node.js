@@ -13,6 +13,7 @@
   </form>
   <div class="btn-div">
     <button class="btn" type="submit" (click)="readData()"> Read data from email</button>
+    <button class="btn" type="submit" (click)="readSaveData()"> Read & Save data from email </button>
   </div>
 </div>
 
@@ -29,6 +30,33 @@
     <div class="body" [innerHTML]="mailData.html"></div>
   </div>
   <br>
-  <h5>Attachment Data:</h5>
-  <h5 class="attachment-data">{{mailData.attachmentData}}</h5>
+  <h5 *ngIf="showReadData">Attachment Data:</h5>
+  <h5 *ngIf="showReadData" class="attachment-data">{{mailData.attachmentData}}</h5>
+  <h5 *ngIf="showReadSaveData">Attachment Data:</h5>
+  <table *ngIf="showReadSaveData" class="table">
+    <thead>
+      <th>SR.</th>
+      <th>Date</th>
+      <th>From</th>
+      <th>To</th>
+      <th>Reason</th>
+      <th>KM</th>
+      <th>Amt</th>
+    </thead>
+    <tr *ngFor="let item of mailData.attachmentData">
+      <ng-container *ngIf="item['SR.'] !== 'Total'">
+        <td>{{ item['SR.'] }}</td>
+        <td>{{ convertExcelDate(item['Date']) | date: 'dd/MM/YYYY' }}</td>
+        <td>{{ item['From '] }}</td>
+        <td>{{ item['To '] }}</td>
+        <td>{{ item['Reason'] }}</td>
+        <td>{{ item['KM'] }}</td>
+        <td>{{ item['Amt'] }}</td>
+      </ng-container>
+      <ng-container *ngIf="item['SR.'] === 'Total'">
+        <td colspan="5">{{ item['SR.'] }}</td>
+        <td>{{ item['Amt'] }}</td>
+      </ng-container>
+    </tr>
+  </table>
 </div>
