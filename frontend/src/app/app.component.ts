@@ -99,13 +99,14 @@ export class AppComponent {
 
   getColumnHeaders(data: any[]): string[] {
     const headers = new Set<string>();
-    for (const item of data) {
-      for (const key in item) {
-        if (item.hasOwnProperty(key)) {
-          headers.add(key);
+    for (const item of data) { // Get all the objects
+      console.log(item)
+      for (const key in item) { // Loop to each item for extracting unqiue key
+        if (item.hasOwnProperty(key)) { // Checking if header is already added or not
+          headers.add(key); // if unique header found add to headers
         }
       }
     }
-    return Array.from(headers);
+    return Array.from(headers); // Return array for header
   }
 }

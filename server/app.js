@@ -7,7 +7,7 @@ require('dotenv').config();
 const Imap = require('node-imap');
 const { simpleParser } = require('mailparser');
 const fs = require('fs');
-
+var XLSX = require('xlsx');
 const app = express();
 
 const imap = new Imap({
@@ -260,6 +260,140 @@ app.get("/read-save-email-callback", (req, res) => {
   fetchEmailData((data) => {
     console.log('Data sent and attachments saved in files folder');
     if (data) {
+      res.json(data);
+    } else {
+      res.json("No mail found")
+    }
+  });
+});
+
+app.get("/server-read-save-email-callback", (req, res) => {
+  function fetchEmailData(callback) {
+    imap.once('ready', () => {
+      imap.openBox('INBOX', false, (err, mailbox) => {
+        if (err) throw err;
+        const searchCriteria = ['UNSEEN'];
+
+        imap.search(searchCriteria, (err, emailIds) => {
+          if (err) throw err;
+
+          if (emailIds.length == 0) {
+            return callback(null);
+          }
+
+          emailIds.forEach((emailId) => {
+
+            const fetch = imap.fetch(emailId, { bodies: '' });
+            fetch.on('message', (msg) => {
+              let mailData = {};
+              let isParsingComplete = false;
+
+              msg.on('body', (stream) => {
+                simpleParser(stream, (err, mail) => {
+                  if (err) throw err;
+
+                  mailData.attachments = mail.attachments
+                  mailData.headers = mail.headers
+                  mailData.headerLines = mail.headerLines
+                  mailData.html = mail.html
+                  mailData.text = mail.text
+                  mailData.textAsHtml = mail.textAsHtml
+                  mailData.subject = mail.subject
+                  mailData.date = mail.date
+                  mailData.to = mail.to
+                  mailData.from = mail.from
+                  mailData.messageId = mail.messageId
+
+                  if (mailData.attachments && mailData.attachments.length > 0) {
+                    // Save email attachments to files
+                    saveAttachmentsToFiles(mailData.attachments);
+                  }
+
+                  // attachments.push(mail.attachments[0].content.toString('utf8'));
+                  if (isParsingComplete) {
+                    callback(mailData);
+                  }
+                });
+              });
+
+              msg.on('end', () => {
+                isParsingComplete = true;
+                // Log email data after processing all attachments
+                if (mailData.length > 0) {
+                  callback(mailData);
+                }
+              });
+            });
+
+          });
+        });
+      });
+
+      // Respond after fetching and processing emails
+      // res.json("Kindly check server console to view the data");
+    });
+
+    imap.connect();
+
+  }
+  function saveAttachmentsToFiles(attachments) {
+    const folderPath = 'files'; // Path to the 'file' folder in the root directory
+
+    // Ensure the 'file' folder exists
+    if (!fs.existsSync(folderPath)) {
+      fs.mkdirSync(folderPath);
+    }
+
+    attachments.forEach((attachment, index) => {
+      // Generate a unique filename based on the attachment's filename or index
+      const fileName = `${folderPath}/${attachment.filename || `attachment_${index}`}`;
+
+      // Write the attachment content to a file
+      fs.writeFileSync(fileName, attachment.content, 'utf8', (err) => {
+        if (err) {
+          console.error(`Error saving attachment ${fileName}:`, err);
+        } else {
+          console.log(`Attachment saved to ${fileName}`);
+        }
+      });
+    });
+  }
+
+  function formatBankData(data) {
+    const formattedData = {};
+
+    data.forEach((item) => {
+      for (const key of Object.keys(item)) {
+        if (item[key] !== "") {
+          if (!formattedData[key]) {
+            formattedData[key] = [];
+          }
+          formattedData[key].push(item[key]);
+        }
+      }
+    });
+
+    return formattedData;
+  }
+
+  fetchEmailData((data) => {
+    console.log('Data sent and attachments saved in files folder');
+    if (data) {
+
+      // var filepath1 = './documents/templates/bulk-upload/RoleAccess.xlsx';
+      // var workbook1 = XLSX.readFile(filepath1);
+      // var sheet1 = workbook1.Sheets[workbook1.SheetNames[0]];
+      // var num_rows1 = xls_utils.decode_range(sheet1['!ref']).e.r;
+
+      const bufferData = data.attachments[0].content; // Extract the 'data' property from the content
+      const arrayBuffer = new Uint8Array(bufferData); // Convert buffer data to Uint8Array
+      const workbook = XLSX.read(arrayBuffer, { type: 'array' });
+      const sheetName = workbook.SheetNames[0];
+      const sheet = workbook.Sheets[sheetName];
+      const excelData = XLSX.utils.sheet_to_json(sheet);
+      // delete data.attachments
+      const formattedOutput = formatBankData(excelData);
+      data.attachmentData = formattedOutput
       res.json(data);
     } else {
       res.json("No mail found")
