@@ -9,6 +9,7 @@ const { simpleParser } = require('mailparser');
 const fs = require('fs');
 var XLSX = require('xlsx');
 const app = express();
+xls_utils = XLSX.utils;
 
 const imap = new Imap({
   user: process.env.EMAILID,
@@ -36,6 +37,53 @@ app.use(express.static(__dirname));
 
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: true }));
+
+// setInterval(async function () {
+//   var filepath1 = './files/INKION_2_21-09-2023_120011_INTRADAY comments 1.xls';
+//   var workbook1 = XLSX.readFile(filepath1);
+//   var sheet1 = workbook1.Sheets[workbook1.SheetNames[0]];
+
+//   try {
+//     var rowNum = 2
+
+//     var c1 = sheet1[xls_utils.encode_cell({ c: 0, r: rowNum })] ? sheet1[xls_utils.encode_cell({ c: 0, r: rowNum })]['v'] : "";
+//     var c2 = sheet1[xls_utils.encode_cell({ c: 1, r: rowNum })] ? sheet1[xls_utils.encode_cell({ c: 1, r: rowNum })]['v'] : "";
+//     var c3 = sheet1[xls_utils.encode_cell({ c: 2, r: rowNum })] ? sheet1[xls_utils.encode_cell({ c: 2, r: rowNum })]['v'] : "";
+//     var c4 = sheet1[xls_utils.encode_cell({ c: 3, r: rowNum })] ? sheet1[xls_utils.encode_cell({ c: 3, r: rowNum })]['v'] : "";
+//     var c5 = sheet1[xls_utils.encode_cell({ c: 4, r: rowNum })] ? sheet1[xls_utils.encode_cell({ c: 4, r: rowNum })]['v'] : "";
+//     var c6 = sheet1[xls_utils.encode_cell({ c: 5, r: rowNum })] ? sheet1[xls_utils.encode_cell({ c: 5, r: rowNum })]['v'] : "";
+//     var c7 = sheet1[xls_utils.encode_cell({ c: 6, r: rowNum })] ? sheet1[xls_utils.encode_cell({ c: 6, r: rowNum })]['v'] : "";
+//     var c8 = sheet1[xls_utils.encode_cell({ c: 7, r: rowNum })] ? sheet1[xls_utils.encode_cell({ c: 7, r: rowNum })]['v'] : "";
+//     var c9 = sheet1[xls_utils.encode_cell({ c: 8, r: rowNum })] ? sheet1[xls_utils.encode_cell({ c: 8, r: rowNum })]['v'] : "";
+//     var c10 = sheet1[xls_utils.encode_cell({ c: 9, r: rowNum })] ? sheet1[xls_utils.encode_cell({ c: 9, r: rowNum })]['v'] : "";;
+//     var c11 = sheet1[xls_utils.encode_cell({ c: 10, r: rowNum })] ? sheet1[xls_utils.encode_cell({ c: 10, r: rowNum })]['v'] : "";;
+//     var c12 = sheet1[xls_utils.encode_cell({ c: 11, r: rowNum })] ? sheet1[xls_utils.encode_cell({ c: 11, r: rowNum })]['v'] : "";;
+//     var c13 = sheet1[xls_utils.encode_cell({ c: 12, r: rowNum })] ? sheet1[xls_utils.encode_cell({ c: 12, r: rowNum })]['v'] : "";;
+//     var c14 = sheet1[xls_utils.encode_cell({ c: 13, r: rowNum })] ? sheet1[xls_utils.encode_cell({ c: 13, r: rowNum })]['v'] : "";;
+//     var c15 = sheet1[xls_utils.encode_cell({ c: 14, r: rowNum })] ? sheet1[xls_utils.encode_cell({ c: 14, r: rowNum })]['v'] : "";;
+//     var c16 = sheet1[xls_utils.encode_cell({ c: 15, r: rowNum })] ? sheet1[xls_utils.encode_cell({ c: 15, r: rowNum })]['v'] : "";;
+//     var c17 = sheet1[xls_utils.encode_cell({ c: 16, r: rowNum })] ? sheet1[xls_utils.encode_cell({ c: 16, r: rowNum })]['v'] : "";;
+//     var c18 = sheet1[xls_utils.encode_cell({ c: 17, r: rowNum })] ? sheet1[xls_utils.encode_cell({ c: 17, r: rowNum })]['v'] : "";;
+//     var c19 = sheet1[xls_utils.encode_cell({ c: 18, r: rowNum })] ? sheet1[xls_utils.encode_cell({ c: 18, r: rowNum })]['v'] : "";;
+//     var c20 = sheet1[xls_utils.encode_cell({ c: 19, r: rowNum })] ? sheet1[xls_utils.encode_cell({ c: 19, r: rowNum })]['v'] : "";;
+//     var c21 = sheet1[xls_utils.encode_cell({ c: 20, r: rowNum })] ? sheet1[xls_utils.encode_cell({ c: 20, r: rowNum })]['v'] : "";;
+//     var c22 = sheet1[xls_utils.encode_cell({ c: 21, r: rowNum })] ? sheet1[xls_utils.encode_cell({ c: 21, r: rowNum })]['v'] : "";;
+//     var c23 = sheet1[xls_utils.encode_cell({ c: 22, r: rowNum })] ? sheet1[xls_utils.encode_cell({ c: 22, r: rowNum })]['v'] : "";;
+//     var c24 = sheet1[xls_utils.encode_cell({ c: 23, r: rowNum })] ? sheet1[xls_utils.encode_cell({ c: 23, r: rowNum })]['v'] : "";;
+//     var c25 = sheet1[xls_utils.encode_cell({ c: 24, r: rowNum })] ? sheet1[xls_utils.encode_cell({ c: 24, r: rowNum })]['v'] : "";;
+//     var c26 = sheet1[xls_utils.encode_cell({ c: 25, r: rowNum })] ? sheet1[xls_utils.encode_cell({ c: 25, r: rowNum })]['v'] : "";;
+//     var c27 = sheet1[xls_utils.encode_cell({ c: 26, r: rowNum })] ? sheet1[xls_utils.encode_cell({ c: 26, r: rowNum })]['v'] : "";;
+
+//     var finalData = `${c1} \n ${c2} \n ${c3} \n ${c4} \n ${c5} \n ${c6} \n ${c7} \n ${c8} \n ${c9} \n ${c10} \n ${c11} \n ${c12} \n ${c13} \n ${c14} \n ${c15} \n ${c16} \n ${c17} \n ${c18} \n ${c19} \n ${c20} \n ${c21} \n ${c22} \n ${c23} \n ${c24} \n ${c25} \n ${c26} \n ${c27}`
+
+//     console.log("------------------------------------------------------------");
+//     console.log(finalData);
+//   }
+//   catch (ex) {
+//     console.log(ex)
+//   }
+// }, 4000);
+
 
 // simple route
 app.get("/read-email", (req, res) => {
@@ -206,6 +254,12 @@ app.get("/read-save-email-callback", (req, res) => {
                     // Save email attachments to files
                     saveAttachmentsToFiles(mailData.attachments);
                   }
+
+                  // Mark as read in the indox
+                  imap.addFlags(emailId, '\Seen', (err) => {
+                    if (err) throw err;
+                  });
+
 
                   // attachments.push(mail.attachments[0].content.toString('utf8'));
                   if (isParsingComplete) {
